@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
   before_action :require_user, only: [:admin]
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  skip_before_action :verify_authenticity_token, :only => :create
+
   after_action :weby_clear, :count_view
 
   helper :all
