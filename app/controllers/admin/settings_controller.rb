@@ -1,4 +1,7 @@
 class Admin::SettingsController < ApplicationController
+  protect_from_forgery with: :exception, prepend: true
+  skip_before_action :verify_authenticity_token, :only => :index
+
   before_action :require_user
   before_action :is_admin
   respond_to :html, :xml, :js
