@@ -1,4 +1,4 @@
-class UpdateActivityRecords < ActiveRecord::Migration
+class UpdateActivityRecords < ActiveRecord::Migration[5.2]
   def up
     ActivityRecord.where(controller: 'page').update_all(controller: 'news')
     ActivityRecord.where(loggeable_type: 'Page').update_all(loggeable_type: 'Journal::News')

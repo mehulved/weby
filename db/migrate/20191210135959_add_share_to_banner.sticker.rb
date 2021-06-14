@@ -1,5 +1,5 @@
 # This migration comes from sticker (originally 20191210131716)
-class AddShareToBanner < ActiveRecord::Migration
+class AddShareToBanner < ActiveRecord::Migration[5.2]
   def up
     create_join_table :sticker_banners, :sites, table_name: 'sticker_banner_sites' do |t|
       t.primary_key :id

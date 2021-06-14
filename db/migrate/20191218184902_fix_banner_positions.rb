@@ -1,4 +1,4 @@
-class FixBannerPositions < ActiveRecord::Migration
+class FixBannerPositions < ActiveRecord::Migration[5.2]
   def up
     Site.find_each do |site|
       banners = site.banner_sites.includes(:banner).published.order('sticker_banner_sites.position ASC, sticker_banner_sites.created_at DESC')

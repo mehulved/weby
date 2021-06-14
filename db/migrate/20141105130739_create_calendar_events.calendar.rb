@@ -1,5 +1,5 @@
 # This migration comes from calendar (originally 20140801145827)
-class CreateCalendarEvents < ActiveRecord::Migration
+class CreateCalendarEvents < ActiveRecord::Migration[5.2]
   def change
     create_table :calendar_events do |t|
       t.integer  :site_id

@@ -1,4 +1,4 @@
-class CreateJournalNewsletterHistories < ActiveRecord::Migration
+class CreateJournalNewsletterHistories < ActiveRecord::Migration[5.2]
   def change
     create_table :journal_newsletter_histories do |t|
       t.integer :site_id

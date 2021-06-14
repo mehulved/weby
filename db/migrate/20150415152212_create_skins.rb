@@ -1,4 +1,4 @@
-class CreateSkins < ActiveRecord::Migration
+class CreateSkins < ActiveRecord::Migration[5.2]
   def change
     create_table :skins do |t|
       t.references :site, index: true
