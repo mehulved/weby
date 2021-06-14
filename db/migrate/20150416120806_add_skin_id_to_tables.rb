@@ -1,4 +1,4 @@
-class AddSkinIdToTables < ActiveRecord::Migration
+class AddSkinIdToTables < ActiveRecord::Migration[5.2]
 	class Site < ApplicationRecord
 		has_many :components
 		has_many :styles

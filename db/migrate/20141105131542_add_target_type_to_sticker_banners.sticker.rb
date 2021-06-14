@@ -1,5 +1,5 @@
 # This migration comes from sticker (originally 20141105161842)
-class AddTargetTypeToStickerBanners < ActiveRecord::Migration
+class AddTargetTypeToStickerBanners < ActiveRecord::Migration[5.2]
   def up
     add_column :sticker_banners, :target_type, :string
     execute 'ALTER TABLE sticker_banners DROP CONSTRAINT banners_page_id_fk'

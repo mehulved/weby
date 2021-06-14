@@ -1,4 +1,4 @@
-class MoveSettingsToSite < ActiveRecord::Migration
+class MoveSettingsToSite < ActiveRecord::Migration[5.2]
   def up
     Extension.includes(:site).where(name: 'journal').each do |ext|
       settings = ext.settings

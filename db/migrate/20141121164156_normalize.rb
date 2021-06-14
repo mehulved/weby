@@ -1,4 +1,4 @@
-class Normalize < ActiveRecord::Migration
+class Normalize < ActiveRecord::Migration[5.2]
   def change
     rename_table :extension_sites, :extensions
     rename_table :site_components, :components

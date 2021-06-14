@@ -1,5 +1,5 @@
 # This migration comes from calendar (originally 20141104160544)
-class MigrateEvents < ActiveRecord::Migration
+class MigrateEvents < ActiveRecord::Migration[5.2]
   class Page < ApplicationRecord
     self.inheritance_column = nil
     has_many :i18ns, class_name: 'Page::I18ns',

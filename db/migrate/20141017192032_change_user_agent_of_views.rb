@@ -1,4 +1,4 @@
-class ChangeUserAgentOfViews < ActiveRecord::Migration
+class ChangeUserAgentOfViews < ActiveRecord::Migration[5.2]
   def up
     change_column :views, :user_agent, :text
     change_column :views, :referer, :text

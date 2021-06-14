@@ -1,5 +1,5 @@
 # This migration comes from journal (originally 20141204171550)
-class AddShareToJournalNews < ActiveRecord::Migration
+class AddShareToJournalNews < ActiveRecord::Migration[5.2]
   def change
     create_join_table :journal_news, :sites do |t|
        t.primary_key :id

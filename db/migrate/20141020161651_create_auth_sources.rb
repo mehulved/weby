@@ -1,4 +1,4 @@
-class CreateAuthSources < ActiveRecord::Migration
+class CreateAuthSources < ActiveRecord::Migration[5.2]
   def change
     create_table :auth_sources do |t|
       t.integer :user_id
