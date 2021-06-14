@@ -12,6 +12,7 @@ services:
     volumes:
       - ".:/weby"
       - "./config/database.yml.example:/weby/config/database.yml"
+      - "./config/secrets.yml.example:/weby/config/secrets.yml"
     environment:
       PG_DB: weby
       PG_USER: postgres
