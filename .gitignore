@@ -42,3 +42,6 @@ Gemfile-ext
 # Ignore terraform cache directory and state files
 terraform/.terraform/
 terraform/terraform.tfstate*
+
+# Ignore data directory created by db container
+data/
