@@ -20,7 +20,7 @@ jobs:
   
       - name: Stop Containers
         if: always()
-        run: docker-compose up -f "docker-compose.yml" down
+        run: docker-compose -f "docker-compose.yml" down
 
       - name: Login to Amazon ECR
         id: login-ecr
