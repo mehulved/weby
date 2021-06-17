@@ -1,3 +1,8 @@
+resource "random_string" "secret_key_base" {
+  length  = 128
+  special = false
+}
+
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "weby-ecsTaskExecutionRole"
 
@@ -127,6 +132,10 @@ resource "aws_ecs_task_definition" "task" {
         {
           name  = "WEBY_HOSTNAME"
           value = data.terraform_remote_state.infra.outputs.address
+        },
+        {
+          name  = "SECRET_KEY_BASE"
+          value = random_string.secret_key_base.result
         }
       ]
 
