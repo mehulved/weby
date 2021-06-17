@@ -122,6 +122,10 @@ resource "aws_ecs_task_definition" "task" {
         {
           name  = "PG_DB"
           value = data.terraform_remote_state.infra.outputs.db_name
+        },
+        {
+          name  = "WEBY_HOSTNAME"
+          value = data.terraform_remote_state.infra.outputs.address
         }
       ]
 
