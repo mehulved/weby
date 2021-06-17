@@ -23,6 +23,48 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+data "aws_iam_policy_document" "ecs_service_scaling" {
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "application-autoscaling:*",
+      "ecs:DescribeServices",
+      "ecs:UpdateService",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:DeleteAlarms",
+      "cloudwatch:DescribeAlarmHistory",
+      "cloudwatch:DescribeAlarms",
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:GetMetricStatistics",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:PutMetricAlarm",
+      "cloudwatch:DisableAlarmActions",
+      "cloudwatch:EnableAlarmActions",
+      "iam:CreateServiceLinkedRole"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ecs_service_scaling" {
+  name        = "weby-scaling"
+  path        = "/"
+  description = "Allow ecs service scaling"
+
+  policy = data.aws_iam_policy_document.ecs_service_scaling.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_service_scaling" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_service_scaling.arn
+}
+
 module "sg-app" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
@@ -111,7 +153,7 @@ resource "aws_ecs_service" "service" {
   name            = "${var.environment}-${var.service_name}"
   cluster         = data.terraform_remote_state.infra.outputs.cluster_arn
   task_definition = aws_ecs_task_definition.task.arn
-  desired_count   = var.service_count
+  desired_count   = var.autoscale_desired
 
   network_configuration {
     subnets          = data.terraform_remote_state.infra.outputs.private_subnets
@@ -130,6 +172,75 @@ resource "aws_ecs_service" "service" {
     capacity_provider = "FARGATE"
     weight            = 1
   }
+
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+}
+
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = var.autoscale_max
+  min_capacity       = var.autoscale_min
+  resource_id        = "service/${data.terraform_remote_state.infra.outputs.cluster_name}/${aws_ecs_service.service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "ecs_policy_down" {
+  name               = "scale-down"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60
+    metric_aggregation_type = "Maximum"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = -1
+    }
+  }
+}
+
+resource "aws_appautoscaling_policy" "ecs_policy_up" {
+  name               = "scale-up"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60
+    metric_aggregation_type = "Maximum"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "service_memory_scale_down" {
+  alarm_name          = "ServiceMemoryScaleDown"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "75"
+
+  dimensions = {
+    ClusterName = data.terraform_remote_state.infra.outputs.cluster_name
+    ServiceName = aws_ecs_service.service.name
+  }
+
+  alarm_description = "This metric monitors ecs memory utilization"
+  alarm_actions     = [aws_appautoscaling_policy.ecs_policy_up.arn, aws_appautoscaling_policy.ecs_policy_up.arn]
 }
 
 resource "aws_lb_target_group" "app_tg" {
@@ -156,4 +267,3 @@ resource "aws_lb_listener" "app_listener" {
     target_group_arn = aws_lb_target_group.app_tg.arn
   }
 }
-
