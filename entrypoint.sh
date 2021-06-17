@@ -7,6 +7,12 @@ then
     WEBY_HOSTNAME="0.0.0.0"
 fi
 
+
+if [[ "$RAILS_ENV" == "production" ]]
+then
+    bundle exec rake assets:precompile --trace
+fi
+
 # Create database
 echo "Creating database..."
 rake db:create

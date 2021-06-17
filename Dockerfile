@@ -1,4 +1,4 @@
-FROM ruby:2.5.7
+FROM ruby:2.5.7 as development
 MAINTAINER Webmaster Team "web@cercomp.ufg.br"
 
 RUN apt-get update
@@ -12,6 +12,12 @@ RUN gem install bundler
 RUN bundle install
 
 ENV RAILS_ENV=development
-RUN bundle exec rake assets:precompile --trace
 
 CMD ./entrypoint.sh
+
+
+FROM development as production
+
+ENV RAILS_ENV=production
+
+CMD export SECRET_KEY_BASE=`bundle exec rake secret`
