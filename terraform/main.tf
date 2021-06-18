@@ -136,6 +136,14 @@ resource "aws_ecs_task_definition" "task" {
         {
           name  = "SECRET_KEY_BASE"
           value = random_string.secret_key_base.result
+        },
+        {
+          name  = "STORAGE_HOST"
+          value = data.terraform_remote_state.infra.outputs.cdn_hostname
+        },
+        {
+          name  = "STORAGE_BUCKET"
+          value = data.terraform_remote_state.infra.outputs.cdn_bucket
         }
       ]
 
