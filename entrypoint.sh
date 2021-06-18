@@ -9,7 +9,7 @@ echo "Database created."
 
 # Load Schema
 echo "Loading database schema..."
-bundle exec rake db:schema:load
+bundle exec rake db:schema:load RAILS_ENV=$RAILS_ENV DISABLE_DATABASE_ENVIRONMENT_CHECK=1
 echo "Schema loaded."
 
 # Run migrations
