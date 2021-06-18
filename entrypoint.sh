@@ -25,13 +25,6 @@ echo "Seeding database..."
 bundle exec bin/rails db:seed RAILS_ENV=$RAILS_ENV
 echo "Database seeded."
 
-# Precompile the assets
-echo "Pre-compiling Assets"
-if [[ "$RAILS_ENV" == "production" ]]
-then
-    bundle exec rake assets:precompile --trace
-fi
-
 # Copy email config file back to initalizers directory
 mv config/email.rb config/initializers/email.rb
 

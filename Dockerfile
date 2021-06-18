@@ -23,3 +23,4 @@ FROM development as production
 ENV RAILS_ENV=production
 
 RUN mkdir log/
+RUN bundle exec rake assets:precompile --trace
