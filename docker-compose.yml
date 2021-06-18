@@ -2,7 +2,8 @@ version: '3.1'
 
 services:
   weby:
-    build: .
+    build:
+      context: .
     image: weby
     container_name: weby_ufg
     restart: always

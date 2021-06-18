@@ -2,25 +2,14 @@
 
 set -e
 
-if [[ -z ${WEBY_HOSTNAME} ]]
-then
-    WEBY_HOSTNAME="0.0.0.0"
-fi
-
-
-if [[ "$RAILS_ENV" == "production" ]]
-then
-    bundle exec rake assets:precompile --trace
-fi
-
 # Create database
 echo "Creating database..."
-rake db:create
+bundle exec rake db:create
 echo "Database created."
 
 # Load Schema
 echo "Loading database schema..."
-rake db:schema:load
+bundle exec rake db:schema:load
 echo "Schema loaded."
 
 # Run migrations
@@ -30,8 +19,16 @@ echo "Migrations completed."
 
 # Add seed data
 echo "Seeding database..."
-bin/rails db:seed RAILS_ENV=$RAILS_ENV
+bundle exec bin/rails db:seed RAILS_ENV=$RAILS_ENV
 echo "Database seeded."
+
+# Precompile the assets
+echo "Pre-compiling Assets"
+if [[ "$RAILS_ENV" == "production" ]]
+then
+    bundle exec rake assets:precompile --trace
+fi
+
 
 
 rails s -b $WEBY_HOSTNAME -p 3000

@@ -12,12 +12,12 @@ RUN gem install bundler
 RUN bundle install
 
 ENV RAILS_ENV=development
+ENV WEBY_HOSTNAME="0.0.0.0"
 
-CMD ./entrypoint.sh
+CMD ["./entrypoint.sh"]
 
 
 FROM development as production
 
 ENV RAILS_ENV=production
 
-CMD export SECRET_KEY_BASE=`bundle exec rake secret`
