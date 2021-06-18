@@ -8,6 +8,7 @@ COPY . /weby
 WORKDIR /weby
 COPY ./config/database.yml.example /weby/config/database.yml
 COPY ./config/secrets.yml.example /weby/config/secrets.yml
+
 RUN gem install bundler
 RUN bundle install
 
@@ -21,3 +22,4 @@ FROM development as production
 
 ENV RAILS_ENV=production
 
+RUN mkdir log/
