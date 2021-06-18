@@ -48,19 +48,14 @@ variable "host_port" {
   default = 3000
 }
 
-variable "service_count" {
-  type    = number
-  default = 5
-}
-
 variable "autoscale_min" {
-  description = "Minimum autoscale (number of EC2)"
-  default     = "1"
+  description = "Minimum autoscale"
+  default     = 1
 }
 
 variable "autoscale_max" {
-  description = "Maximum autoscale (number of EC2)"
-  default     = "10"
+  description = "Maximum autoscale"
+  default     = 1
 }
 
 variable "autoscale_desired" {
