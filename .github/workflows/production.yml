@@ -25,7 +25,7 @@ jobs:
           STORAGE_ACCESS_SECRET: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
           STORAGE_HOST: ${{ secrets.storage_HOST }}
-        run: docker-compose run web bundle exec rake assets:precompile --trace
+        run: docker-compose run weby bundle exec rake assets:precompile --trace
 
       - name: Stop Containers
         if: always()
