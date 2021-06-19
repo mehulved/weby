@@ -21,5 +21,3 @@ CMD ["./entrypoint.sh"]
 FROM development as production
 
 ENV RAILS_ENV=production
-
-RUN mkdir log/
