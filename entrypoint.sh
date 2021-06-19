@@ -2,8 +2,11 @@
 
 set -e
 
-# Copy email config file to config directory
-mv config/initializers/email.rb config/email.rb
+# Create logs directory if it doesn't exist
+if [ ! -d "/weby/log" ]
+then
+	mkdir /weby/log/
+fi
 
 # Create database
 echo "Creating database..."
@@ -24,10 +27,6 @@ echo "Migrations completed."
 echo "Seeding database..."
 bundle exec bin/rails db:seed RAILS_ENV=$RAILS_ENV
 echo "Database seeded."
-
-# Copy email config file back to initalizers directory
-mv config/email.rb config/initializers/email.rb
-
 
 
 rails s -b $WEBY_HOSTNAME -p 3000
