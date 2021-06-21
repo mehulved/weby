@@ -63,3 +63,9 @@ variable "autoscale_desired" {
   type        = number
   default     = 1
 }
+
+variable "weby_hostname" {
+  description = "Hostname for the service to listen"
+  type        = string
+  default     = "lvh.me"
+}

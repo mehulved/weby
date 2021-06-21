@@ -131,7 +131,7 @@ resource "aws_ecs_task_definition" "task" {
         },
         {
           name  = "WEBY_HOSTNAME"
-          value = data.terraform_remote_state.infra.outputs.address
+          value = var.weby_hostname
         },
         {
           name  = "SECRET_KEY_BASE"
@@ -139,11 +139,11 @@ resource "aws_ecs_task_definition" "task" {
         },
         {
           name  = "STORAGE_HOST"
-          value = data.terraform_remote_state.infra.outputs.cdn_hostname
+          value = "s3.${var.region}.amazonaws.com"
         },
         {
           name  = "STORAGE_BUCKET"
-          value = data.terraform_remote_state.infra.outputs.cdn_bucket
+          value = split(".", data.terraform_remote_state.infra.outputs.cdn_bucket)[0]
         }
       ]
 
