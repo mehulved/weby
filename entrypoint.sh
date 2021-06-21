@@ -2,10 +2,16 @@
 
 set -e
 
+# Delete old PID if it exists
+if [ -f "tmp/pids/server.pid" ]
+then
+    rm -f tmp/pids/server.pid
+fi
+
 # Create logs directory if it doesn't exist
 if [ ! -d "/weby/log" ]
 then
-	mkdir /weby/log/
+    mkdir /weby/log/
 fi
 
 # Create database
