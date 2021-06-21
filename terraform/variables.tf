@@ -55,7 +55,7 @@ variable "autoscale_min" {
 
 variable "autoscale_max" {
   description = "Maximum autoscale"
-  default     = 1
+  default     = 5
 }
 
 variable "autoscale_desired" {
