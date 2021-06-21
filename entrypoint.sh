@@ -35,4 +35,4 @@ bundle exec bin/rails db:seed RAILS_ENV=$RAILS_ENV
 echo "Database seeded."
 
 
-rails s -b $WEBY_HOSTNAME -p 3000
+rails s -b 0.0.0.0 -p 3000
