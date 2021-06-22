@@ -19,6 +19,8 @@ RUN bundle install
 ENV RAILS_ENV=development
 ENV WEBY_HOSTNAME="0.0.0.0"
 
+EXPOSE 3000
+
 CMD ["./entrypoint.sh"]
 
 
