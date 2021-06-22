@@ -16,8 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
         
+      - name: Build Container
+        run: docker build -t weby .
+
       - name: Start Containers
-        run: docker-compose -f "docker-compose.yml" up --build -d
+        run: docker-compose -f "docker-compose.yml" up -d
  
       - name: Precompile assets
         env:
@@ -27,7 +30,6 @@ jobs:
           STORAGE_HOST: ${{ secrets.storage_HOST }}
           RAILS_ENV: production
         run: docker-compose run weby bundle exec rake assets:precompile --trace RAILS_ENV="${{ env.RAILS_ENV }}" FOG_PROVIDER="AWS" STORAGE_ACCESS_KEY="${{ env.STORAGE_ACCESS_KEY }}" STORAGE_ACCESS_SECRET="${{ env.STORAGE_ACCESS_SECRET }}" STORAGE_BUCKET="${{ env.STORAGE_BUCKET }}" STORAGE_HOST="{{ $env.STORAGE_HOST }}"
-
 
       - name: Stop Containers
         if: always()
@@ -43,6 +45,24 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Get image version
+        id: docker-image-version
+        run: docker image inspect --format='{{ index .Config.Labels "com.weby.version" }}' weby
+
+      - name: Tag Container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: weby
+          IMAGE_TAG: ${{ steps.docker-image-version.outputs.* }}
+        run: docker tag weby $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Push Container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: weby
+          IMAGE_TAG: ${{ steps.docker-image-version.outputs.* }}
+        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Tag Container
         env:
