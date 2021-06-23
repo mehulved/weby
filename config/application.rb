@@ -32,7 +32,7 @@ module Weby
     # config.i18n.load_path += Dir["#{config.root}/**/locales/**/*.yml"]
     config.i18n.load_path += Dir["#{config.root}/**/config/locales/**/*.yml"]
     config.i18n.load_path += Dir["#{config.root}/**/lib/weby/**/locales/**/*.yml"]
-    config.i18n.default_locale = 'pt-BR'
+    config.i18n.default_locale = 'en-US'
     I18n.config.enforce_available_locales = false
 
     ActiveModelSerializers.config.adapter = :json
