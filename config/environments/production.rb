@@ -62,7 +62,7 @@ Rails.application.configure do
   config.log_level = :info #:debug
 
   if ENV['STORAGE_BUCKET'].present?
-    region = 'us-east-1'
+    region = 'us-west-1'
 
     config.paperclip_defaults = {
       storage: :s3,
