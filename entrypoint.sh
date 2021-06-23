@@ -14,26 +14,21 @@ then
     mkdir /weby/log/
 fi
 
-if bundle exec rake db:exists; then
+if bundle exec rake db:schema:load; then
   # Run migrations
   echo "Running migrations..."
   bundle exec rake db:migrate
-  echo "Migrations completed."
-else
-  # Create database
-  echo "Creating database..."
-  bundle exec rake db:create
-  echo "Database created."
-
-  # Run migrations
-  echo "Running migrations..."
-  bundle exec rails db:migrate
   echo "Migrations completed."
 
   # Add seed data
   echo "Seeding database..."
   bundle exec bin/rails db:seed RAILS_ENV=$RAILS_ENV
   echo "Database seeded."
+else
+  # Run migrations
+  echo "Running migrations..."
+  bundle exec rails db:migrate
+  echo "Migrations completed."
 fi
 
 
