@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build"
     outputs:
-      weby-version: ${{ steps.docker-image-version.image-version }}
+      weby-version: ${{ steps.docker-image-version.outputs.image-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v1
