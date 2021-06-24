@@ -56,7 +56,7 @@ jobs:
       - name: Get image version
         id: docker-image-version
         run: |
-                echo "::set-output name=image-version::${docker image inspect --format='{{ index .Config.Labels "com.weby.version" }}' weby}"
+                echo "::set-output name=image-version::$(docker image inspect --format='{{ index .Config.Labels "com.weby.version" }}' weby)"
 
       - name: Tag Container
         env:
