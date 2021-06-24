@@ -11,7 +11,8 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     name: "Build"
-
+    outputs:
+      weby-version: ${{ steps.docker-image-version.image-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -117,7 +118,7 @@ jobs:
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
       - name: Terraform Apply
-        run: terraform -chdir=terraform/ apply -auto-approve -var=image_tag=${{ steps.docker-image-version.outputs.image-version }}
+        run: terraform -chdir=terraform/ apply -auto-approve -var=image_tag=${{ needs.docker.outputs.weby-version }}
         env:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
