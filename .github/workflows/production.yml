@@ -29,7 +29,7 @@ jobs:
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
           STORAGE_HOST: ${{ secrets.storage_HOST }}
           RAILS_ENV: production
-        run: docker-compose run weby bundle exec rake assets:precompile --trace RAILS_ENV="${{ env.RAILS_ENV }}" FOG_PROVIDER="AWS" STORAGE_ACCESS_KEY="${{ env.STORAGE_ACCESS_KEY }}" STORAGE_ACCESS_SECRET="${{ env.STORAGE_ACCESS_SECRET }}" STORAGE_BUCKET="${{ env.STORAGE_BUCKET }}" STORAGE_HOST="{{ $env.STORAGE_HOST }}"
+        run: docker-compose run weby bundle exec rake assets:precompile --trace RAILS_ENV="${{ env.RAILS_ENV }}" FOG_PROVIDER="AWS" STORAGE_ACCESS_KEY="${{ env.STORAGE_ACCESS_KEY }}" STORAGE_ACCESS_SECRET="${{ env.STORAGE_ACCESS_SECRET }}" STORAGE_BUCKET="${{ env.STORAGE_BUCKET }}" STORAGE_HOST="${{ env.STORAGE_HOST }}"
 
       - name: Stop Containers
         if: always()
