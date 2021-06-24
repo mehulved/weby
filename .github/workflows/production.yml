@@ -19,9 +19,12 @@ jobs:
       - name: Build Container
         run: docker build -t weby .
 
-      - name: Start Containers
-        run: docker-compose -f "docker-compose.yml" up -d
- 
+      - name: Start database container
+        run: docker run --name webydb -d --rm --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} -v=${PWD}/data:/var/lib/postgresql/data" -v=${PWD}/postgres_init/:/docker-entrypoint-initdb.d/" postgres
+
+      - name: Start weby container
+        run: docker run --name weby --link webydb -d --rm --env PG_DB=weby --env PG_USER=postgres --env PG_PASS=${{ secrets.POSTGRES_PASSWORD }} --env PG_HOST=webydb --env SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }} weby
+
       - name: Precompile assets
         env:
           STORAGE_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -29,11 +32,15 @@ jobs:
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
           STORAGE_HOST: ${{ secrets.storage_HOST }}
           RAILS_ENV: production
-        run: docker-compose run weby bundle exec rake assets:precompile --trace RAILS_ENV="${{ env.RAILS_ENV }}" FOG_PROVIDER="AWS" STORAGE_ACCESS_KEY="${{ env.STORAGE_ACCESS_KEY }}" STORAGE_ACCESS_SECRET="${{ env.STORAGE_ACCESS_SECRET }}" STORAGE_BUCKET="${{ env.STORAGE_BUCKET }}" STORAGE_HOST="${{ env.STORAGE_HOST }}"
+        run: docker exec --env RAILS_ENV="${{ env.RAILS_ENV }}" --env FOG_PROVIDER="AWS" --env STORAGE_ACCESS_KEY="${{ env.STORAGE_ACCESS_KEY }}" --env STORAGE_ACCESS_SECRET="${{ env.STORAGE_ACCESS_SECRET }}" --env STORAGE_BUCKET="${{ env.STORAGE_BUCKET }}" --env STORAGE_HOST="${{ env.STORAGE_HOST }}" weby bundle exec rake assets:precompile --trace
 
-      - name: Stop Containers
+      - name: Stop database container
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker stop webydb
+
+      - name: Stop weby container
+        if: always()
+        run: docker stop weby
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
