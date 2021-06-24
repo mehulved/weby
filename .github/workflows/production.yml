@@ -20,7 +20,7 @@ jobs:
         run: docker build -t weby .
 
       - name: Start database container
-        run: docker run --name webydb -d --rm --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} -v=${PWD}/data:/var/lib/postgresql/data" -v=${PWD}/postgres_init/:/docker-entrypoint-initdb.d/" postgres
+        run: docker run --name webydb -d --rm --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} -v="${PWD}/data:/var/lib/postgresql/data" -v="${PWD}/postgres_init/:/docker-entrypoint-initdb.d/" postgres
 
       - name: Start weby container
         run: docker run --name weby --link webydb -d --rm --env PG_DB=weby --env PG_USER=postgres --env PG_PASS=${{ secrets.POSTGRES_PASSWORD }} --env PG_HOST=webydb --env SECRET_KEY_BASE=${{ secrets.SECRET_KEY_BASE }} weby
