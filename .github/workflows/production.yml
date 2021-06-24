@@ -55,20 +55,21 @@ jobs:
 
       - name: Get image version
         id: docker-image-version
-        run: docker image inspect --format='{{ index .Config.Labels "com.weby.version" }}' weby
+        run: |
+                echo "::set-output name=image-version::${docker image inspect --format='{{ index .Config.Labels "com.weby.version" }}' weby}"
 
       - name: Tag Container
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: weby
-          IMAGE_TAG: ${{ steps.docker-image-version.outputs.* }}
+          IMAGE_TAG: ${{ steps.docker-image-version.outputs.image-version }}
         run: docker tag weby $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Push Container
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: weby
-          IMAGE_TAG: ${{ steps.docker-image-version.outputs.* }}
+          IMAGE_TAG: ${{ steps.docker-image-version.outputs.image-version }}
         run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Tag Container
@@ -116,7 +117,7 @@ jobs:
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
       - name: Terraform Apply
-        run: terraform -chdir=terraform/ apply -auto-approve -var=image_tag=${{ steps.docker-image-version.outputs.* }}
+        run: terraform -chdir=terraform/ apply -auto-approve -var=image_tag=${{ steps.docker-image-version.outputs.image-version }}
         env:
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
